@@ -1,16 +1,26 @@
 #include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <termios.h>
 
+
+struct termios orig_termios;
+void RawmodeDisable() {
+  tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
+}
+
 void RawmodeEnable(){
     {
-        struct termios rawmode;
+    tcgetattr(STDIN_FILENO, &orig_termios);
+    atexit(RawmodeDisable);
 
-        tcgetattr(STDIN_FILENO, &rawmode);
+    struct termios rawmode = orig_termios;
+    rawmode.c_iflag &= ~(IXON);
+    rawmode.c_lflag &= ~(ECHO | ICANON | ISIG);
 
-        rawmode.c_lflag &= ~(ECHO);
+        // rawmode.c_lflag &= ~(ECHO);
         tcsetattr(STDIN_FILENO, TCSAFLUSH, &rawmode);
-        /* data */
     };
     
 }
@@ -18,7 +28,14 @@ void RawmodeEnable(){
 int main(){
 
     RawmodeEnable();
-    char i;
-    while ( read(STDIN_FILENO, &i, 1) == 1 && i != 'q');
+    char c;
+    while ( read(STDIN_FILENO, &c, 1) == 1 && c != 'q'){
+        if (iscntrl(c)){
+            printf("%d\n", c);
+        }
+        else{
+            printf("%d ('%i')", c, c);
+        }
+    }
     return 0;
 }
