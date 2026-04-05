@@ -37,7 +37,7 @@ void RawmodeEnable(){
     rawmode.c_cc[VTIME] = 1;
 
     if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &rawmode) == -1) die("tcsetattr");
-    };
+    }
 
 // Init //
 
