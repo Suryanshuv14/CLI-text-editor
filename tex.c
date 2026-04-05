@@ -16,10 +16,9 @@ void RawmodeEnable(){
     atexit(RawmodeDisable);
 
     struct termios rawmode = orig_termios;
-    rawmode.c_iflag &= ~(IXON);
-    rawmode.c_lflag &= ~(ECHO | ICANON | ISIG);
+    rawmode.c_iflag &= ~(IXON); // Disable Ctrl + S and Q
+    rawmode.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG); // disable Ctrl + C, Z and V signals to prevent program kill
 
-        // rawmode.c_lflag &= ~(ECHO);
         tcsetattr(STDIN_FILENO, TCSAFLUSH, &rawmode);
     };
     
