@@ -24,7 +24,6 @@ void RawmodeDisable() {
 }
 
 void RawmodeEnable(){
-    {
     if (tcgetattr(STDIN_FILENO, &orig_termios) == -1) die("tcgetattr");
     atexit(RawmodeDisable);
 
@@ -38,9 +37,7 @@ void RawmodeEnable(){
     rawmode.c_cc[VTIME] = 1;
 
     if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &rawmode) == -1) die("tcsetattr");
-        tcsetattr(STDIN_FILENO, TCSAFLUSH, &rawmode);
     };
-}
 
 // Init //
 
